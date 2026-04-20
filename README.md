@@ -15,6 +15,23 @@ The repo is implemented based on [https://github.com/w86763777/pytorch-ddpm](htt
 We provide mainly the scripts for trianing and evaluating the CIFAR100LT dataset.
 To run the code, please change the argument 'root' to the path where the dataset is downloaded.
 
+### Run multiple experiment configs sequentially
+To speed up rebuttal or ablation workflows, you can execute a queue of runs from a single JSON config:
+
+```bash
+python run_multi_config.py --plan config/experiments/rebuttal_1p5day_plan.json
+```
+
+Useful options:
+
+```bash
+# Only print generated commands
+python run_multi_config.py --plan config/experiments/rebuttal_1p5day_plan.json --dry_run
+
+# Keep running remaining jobs if one fails
+python run_multi_config.py --plan config/experiments/rebuttal_1p5day_plan.json --continue_on_error
+```
+
 ## Files used in evaluation
 
 Please find the [features for cifar 100 and cifar 10](https://drive.google.com/drive/folders/1Y89vu9DGiQsHl8YvwMrr_7UT4p4Pg_wV?usp=sharing) used in precision/recall/f_beta metrics. Put them in the stats folder and the codes will be ready to run. Note that those two metrics will only be evaluated if the number of samples is 50k otherwise it returns 0.

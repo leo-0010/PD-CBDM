@@ -1,0 +1,47 @@
+{
+  "common_args": [
+    "--flagfile", "./config/cifar100.txt",
+    "--parallel",
+    "--conditional",
+    "--data_type", "cifar100lt",
+    "--img_size", "32",
+    "--save_step", "100000",
+    "--sample_step", "50000"
+  ],
+  "runs": [
+    {
+      "name": "ablation_baseline_imb001",
+      "args": [
+        "--train",
+        "--logdir", "./logs/rebuttal/baseline_imb001",
+        "--total_steps", "300001",
+        "--batch_size", "64",
+        "--imb_factor", "0.01"
+      ]
+    },
+    {
+      "name": "ablation_pd_only_imb001",
+      "args": [
+        "--train",
+        "--logdir", "./logs/rebuttal/pd_only_imb001",
+        "--total_steps", "300001",
+        "--batch_size", "48",
+        "--imb_factor", "0.01",
+        "--cb",
+        "--tau", "1.0"
+      ]
+    },
+    {
+      "name": "ratio_sweep_full_imb002",
+      "args": [
+        "--train",
+        "--logdir", "./logs/rebuttal/full_imb002",
+        "--total_steps", "300001",
+        "--batch_size", "48",
+        "--imb_factor", "0.02",
+        "--cb",
+        "--tau", "1.0"
+      ]
+    }
+  ]
+}
