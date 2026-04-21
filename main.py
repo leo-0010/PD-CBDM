@@ -7,6 +7,10 @@ from tqdm import trange
 
 import torch
 import numpy as np
+from PIL import Image
+
+if not hasattr(Image, 'ANTIALIAS') and hasattr(Image, 'Resampling'):
+    Image.ANTIALIAS = Image.Resampling.LANCZOS
 
 from tensorboardX import SummaryWriter
 from torchvision.datasets import CIFAR10, CIFAR100

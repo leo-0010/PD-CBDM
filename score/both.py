@@ -14,6 +14,24 @@ from .prd_score import compute_prd_from_embedding, prd_to_max_f_beta_pair
 device = torch.device('cuda:0')
 
 
+def _get_reference_feats_path(data_type, fid_cache):
+    stats_dir = os.path.dirname(os.path.abspath(fid_cache)) if fid_cache else os.path.abspath('./stats')
+    if data_type in ('cifar100', 'cifar100lt'):
+        feats_name = 'cifar100_feats.npy'
+    elif data_type in ('cifar10', 'cifar10lt'):
+        feats_name = 'cifar10_feats.npy'
+    else:
+        raise ValueError(f'Unsupported data_type for PRD features: {data_type}')
+
+    feats_path = os.path.join(stats_dir, feats_name)
+    if not os.path.exists(feats_path):
+        raise FileNotFoundError(
+            f'Missing PRD reference features: {feats_path}. '
+            f'Please place {feats_name} under {stats_dir}.'
+        )
+    return feats_path
+
+
 def get_inception_and_fid_score(images, labels, fid_cache, num_images=None,
                                 splits=10, batch_size=50,
                                 use_torch=False,
@@ -126,13 +144,9 @@ def get_inception_and_fid_score(images, labels, fid_cache, num_images=None,
     print('calculate prd (F_beta)')
     prd_score = (0, 0)
     if FLAGS.prd and len(fid_acts)==50000:
-        # import pdb; pdb.set_trace()
-      
         print(FLAGS.data_type)
-        if FLAGS.data_type == "cifar100" or FLAGS.data_type == "cifar100lt":
-           feats = np.load('/mnt/workspace/dlly/ucm3/stats/cifar100_feats.npy')
-        elif FLAGS.data_type == "cifar10" or FLAGS.data_type == "cifar10lt":
-           feats = np.load('/mnt/workspace/dlly/ucm3/stats/cifar10_feats.npy')
+        feats_path = _get_reference_feats_path(FLAGS.data_type, fid_cache)
+        feats = np.load(feats_path)
         feats = torch.Tensor(feats)
         if isinstance(fid_acts, np.ndarray):
             fid_acts = torch.Tensor(fid_acts)
@@ -153,10 +167,8 @@ def get_inception_and_fid_score(images, labels, fid_cache, num_images=None,
     im_prd = (0, 0)
     if FLAGS.improved_prd and len(fid_acts)==50000:
         print(FLAGS.data_type)
-        if FLAGS.data_type == "cifar100" or FLAGS.data_type == "cifar100lt":
-           feats = np.load('/mnt/workspace/dlly/ucm3/stats/cifar100_feats.npy')
-        elif FLAGS.data_type == "cifar10" or FLAGS.data_type == "cifar10lt":
-           feats = np.load('/mnt/workspace/dlly/ucm3/stats/cifar10_feats.npy')
+        feats_path = _get_reference_feats_path(FLAGS.data_type, fid_cache)
+        feats = np.load(feats_path)
         if isinstance(fid_acts, torch.Tensor):
             fid_acts = fid_acts.numpy()
         ipr = IPR(32, k=5, num_samples=50000, model='InceptionV3')
