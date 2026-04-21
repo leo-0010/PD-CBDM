@@ -1,0 +1,48 @@
+{
+  "common_args": [
+    "--flagfile", "./config/cifar100.txt",
+    "--noparallel",
+    "--conditional",
+    "--data_type", "cifar100lt",
+    "--img_size", "32",
+    "--root", "./data",
+    "--save_step", "50000",
+    "--sample_step", "50000"
+  ],
+  "runs": [
+    {
+      "name": "ablation_pd_reweight_imb001_250k",
+      "args": [
+        "--train",
+        "--logdir", "./logs/rebuttal_2day/pd_reweight_imb001",
+        "--total_steps", "250001",
+        "--batch_size", "48",
+        "--imb_factor", "0.01",
+        "--cb",
+        "--tau", "1.0"
+      ]
+    },
+    {
+      "name": "baseline_imb002_250k",
+      "args": [
+        "--train",
+        "--logdir", "./logs/rebuttal_2day/baseline_imb002",
+        "--total_steps", "250001",
+        "--batch_size", "64",
+        "--imb_factor", "0.02"
+      ]
+    },
+    {
+      "name": "full_imb002_250k",
+      "args": [
+        "--train",
+        "--logdir", "./logs/rebuttal_2day/full_imb002",
+        "--total_steps", "250001",
+        "--batch_size", "48",
+        "--imb_factor", "0.02",
+        "--cb",
+        "--tau", "1.0"
+      ]
+    }
+  ]
+}
